@@ -1,5 +1,5 @@
 /**
- * Updates the Map with the data acquired from the lasers
+ * Updates the AreaMap with the data acquired from the lasers.
  * 
  */
 public class Cartographer {
@@ -40,22 +40,44 @@ public class Cartographer {
         
     }
     
-    
     /**
-     * Updates the map with a data load. CALL THIS ONE with data from TestRobot2 :)
-     * @param robotPosition the x,y coordinates of the robot
-     * @param robotHeading the angle of the robot from the x axis.
-     * @param angles the angles for the laser set from the last function of TestRobot2. Considers that the angle straight ahead is 0.
-     * @param echoes the distance for each laser range from RobotCommunications
+     * Updates the map with a data load. CALL THIS ONE with data from TestRobot2.
+     * Ensure the responses are valid (have been used with getResponse).
+     * Assumes echoes are the distance from the robot position to the detected obstacle.
+     * @param lr
+     * @param ler
+     * @param lpr 
      */
-    public void updateWithLaserData(Position robotPosition, double robotHeading, double[] angles, double[] echoes){
-        double correctedAngle;
+    public void updateWithLaserData(LocalizationResponse lr, LaserEchoesResponse ler, LaserPropertiesResponse lpr){
+        // First, let's get the data we need from the responses.
+        double robotHeading = lr.getHeadingAngle();
+        Position robotPosition = new Position(lr.getPosition());
         
-        for (int i=0; i<angles.length; i++){    
-            correctedAngle=angles[i]+robotHeading;
-            updateLaserLine(robotPosition, correctedAngle, echoes[i]);
+        double[] laserEchoes = ler.getEchoes();
+        double[] laserAngles = getAngles(lpr);
+        
+        double correctedAngle;
+        for (int i=0; i<laserAngles.length; i++){    
+            correctedAngle=laserAngles[i]+robotHeading;
+            updateLaserLine(robotPosition, correctedAngle, laserEchoes[i]);
         }
+        
+    }   
+
+    private double[] getAngles(LaserPropertiesResponse lpr) {
+        // create a table of the right size
+        int beamCount = (int) ((lpr.getEndAngle()-lpr.getStartAngle())/lpr.getAngleIncrement())+1;
+        double[] angles = new double[beamCount];
+        
+        // Based on example code, it is wiser to use 1 degree in radians as an 
+        // increment to avoid rounding errors.
+        double increment = 1 * (Math.PI/180);
+        angles[0] = lpr.getStartAngle();
+        
+        for (int i = 1; i<beamCount; i++){
+            angles[i] = angles[i-1]+increment;
+        }
+        
+        return angles;
     }
-    
-    
 }
