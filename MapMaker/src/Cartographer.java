@@ -7,8 +7,7 @@ public class Cartographer {
     private final AreaMap map;
     private final float mapWidth; //x
     private final float mapLength; //y
-    private static final float GRID_ELEMENT_SIZE = 0.1f; // To change. is this 10cm?
-    
+        
 
     public Cartographer(AreaMap map, float mapWidth, float mapLength) {
         this.map = map;
@@ -28,16 +27,16 @@ public class Cartographer {
         double currentDistance = 0; // the distance along the laser
         
         do{
-            currentDistance += GRID_ELEMENT_SIZE;
+            currentDistance += map.GRID_ELEMENT_SIZE;
             
             currentX = currentDistance * Math.cos(laserAngle);
             currentY = currentDistance * Math.sin(laserAngle);
             
-            map.empty(currentX/GRID_ELEMENT_SIZE, currentY/GRID_ELEMENT_SIZE);
+            map.empty(currentX/map.GRID_ELEMENT_SIZE, currentY/map.GRID_ELEMENT_SIZE);
             
         }while (currentDistance <= echoLength);
         
-        map.full(currentX/GRID_ELEMENT_SIZE, currentY/GRID_ELEMENT_SIZE);
+        map.full(currentX/map.GRID_ELEMENT_SIZE, currentY/map.GRID_ELEMENT_SIZE);
         
     }
     
