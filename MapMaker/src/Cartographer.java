@@ -64,7 +64,7 @@ public class Cartographer {
         
     }   
 
-    private double[] getAngles(LaserPropertiesResponse lpr) {
+    public double[] getAngles(LaserPropertiesResponse lpr) {
         // create a table of the right size
         int beamCount = (int) ((lpr.getEndAngle()-lpr.getStartAngle())/lpr.getAngleIncrement())+1;
         double[] angles = new double[beamCount];
