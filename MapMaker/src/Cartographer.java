@@ -27,7 +27,7 @@ public class Cartographer {
         }
     }
     
-    public void go(){
+    public void run(){
         task = new Thread() {
             public void run() {
 		try{
@@ -47,6 +47,7 @@ public class Cartographer {
                 }
             }
         };
+        task.start();
             
         
     }

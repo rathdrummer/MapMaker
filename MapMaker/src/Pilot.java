@@ -129,7 +129,7 @@ public class Pilot {
     /**
      * Starts the robot moving towards the destination position.
      */
-    public void go(){
+    public void run(){
         task = new Thread() {
             public void run() {
 		while (true) {

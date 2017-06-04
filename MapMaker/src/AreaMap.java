@@ -14,10 +14,17 @@ public class AreaMap {
     
     private boolean showGUI = true;
 
-    public AreaMap(int[][] grid, int numCols, int numRows) {
-        this.grid = grid;
+    public AreaMap(int numCols, int numRows) {
+        this.grid = new int[numCols][numRows];
         this.numCols = numCols;
         this.numRows = numRows;
+        
+        for (int[] cols : grid){
+            for (int element : cols){
+                element = -1;
+            }
+        }
+        
         this.showMap = new ShowMap(numRows, numCols, showGUI);
     }
     
@@ -37,6 +44,9 @@ public class AreaMap {
      * @param yElement the y grid coordinate (row)
      */
     public void empty(int xElement, int yElement) {
+        if (grid[xElement][yElement]==-1){
+            grid[xElement][yElement]=7;
+        }
         grid[xElement][yElement]--;
         if (grid[xElement][yElement]<0) grid[xElement][yElement] = 0;
 
@@ -52,6 +62,9 @@ public class AreaMap {
      * @param yElement the y grid coordinate (row)
      */
     public void full(int xElement, int yElement) {
+        if (grid[xElement][yElement]==-1){
+            grid[xElement][yElement]=7;
+        }
         grid[xElement][yElement]+=3;
         if (grid[xElement][yElement]>MAX_VAL) grid[xElement][yElement] = MAX_VAL;
     }
@@ -69,6 +82,12 @@ public class AreaMap {
         int x = (int) Math.floor(p.getX()/GRID_ELEMENT_SIZE);
         int y = (int) Math.floor(p.getY()/GRID_ELEMENT_SIZE);
         return new int[]{x,y};
+    }
+    
+    public Position getWorldCoordinates(int[] coords){
+        double x = (double)coords[0]*GRID_ELEMENT_SIZE;
+        double y = (double)coords[1]*GRID_ELEMENT_SIZE;
+        return new Position(x,y);
     }
    
     
