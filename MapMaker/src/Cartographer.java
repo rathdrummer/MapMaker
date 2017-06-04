@@ -7,12 +7,48 @@ public class Cartographer {
     private final AreaMap map;
     private final float mapWidth; //x
     private final float mapLength; //y
+    private Thread task;
+    private LaserPropertiesResponse lpr;
+    private RobotCommunication rCom;
+    
+    public static final double TICK = 0.1;
         
 
-    public Cartographer(AreaMap map, float mapWidth, float mapLength) {
+    public Cartographer(AreaMap map, float mapWidth, float mapLength, RobotCommunication rCom) {
         this.map = map;
         this.mapWidth = mapWidth;
         this.mapLength = mapLength;
+        this.lpr = new LaserPropertiesResponse();
+        this.rCom = rCom;
+        try{
+            this.rCom.getResponse(lpr);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void go(){
+        task = new Thread() {
+            public void run() {
+		try{
+                    while (true) {
+                        LocalizationResponse lr = new LocalizationResponse();
+                        LaserEchoesResponse ler = new LaserEchoesResponse();
+                    
+                        rCom.getResponse(lr);
+                        rCom.getResponse(ler);
+                        
+                        updateWithLaserData(lr,ler,lpr);
+                        
+                        Thread.sleep((int)(TICK*1000));
+                    }
+                }catch (Exception e){
+                    System.out.print("Cartographer exception - "+e.getLocalizedMessage());                    
+                }
+            }
+        };
+            
+        
     }
     
     /**
